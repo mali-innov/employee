@@ -17,9 +17,8 @@ public class AuthenticationResponse {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private String gender;
     private LocalDate dateOfBirth;
-    private List<String> permissions;
+    private List<String> roles;
     private State state;
     private String accessToken;
 }

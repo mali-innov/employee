@@ -1,8 +1,5 @@
 package com.maliinnov.employee.services.employee;
 
-import com.maliinnov.employee.dto.auth.AuthenticationRequest;
-import com.maliinnov.employee.dto.auth.AuthenticationResponse;
-import com.maliinnov.employee.dto.employee.EmployeeRequest;
 import com.maliinnov.employee.dto.employee.EmployeeResponse;
 import com.maliinnov.employee.enums.State;
 import com.maliinnov.employee.exception.BadRequestException;
@@ -24,26 +21,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository repository;
 
     @Override
-    public EmployeeResponse addEmployee(EmployeeRequest employeeRequest) {
-        Employee email = repository.findByEmail(employeeRequest.getEmail());
+    public EmployeeResponse addEmployee(Employee employee) {
+        Employee email = repository.findByEmail(employee.getEmail());
         if (email != null){
-            throw new BadRequestException(employeeRequest.getEmail()+" existe déjà");
+            throw new BadRequestException(employee.getEmail()+" existe déjà");
         }
-        Employee phoneNumber = repository.findByPhoneNumber(employeeRequest.getPhoneNumber());
+        Employee phoneNumber = repository.findByPhoneNumber(employee.getPhoneNumber());
         if (phoneNumber != null){
-            throw new BadRequestException(employeeRequest.getPhoneNumber()+" existe déjà");
+            throw new BadRequestException(employee.getPhoneNumber()+" existe déjà");
         }
-        Employee employee = this.mapAndSaveEmployee(employeeRequest);
-        return this.mapToEmployeeDto(employee);
+        return this.mapToEmployeeDto(repository.save(employee));
     }
 
     @Override
     public List<EmployeeResponse> findAll() {
         List<Employee> employees = repository.findAll();
         List<EmployeeResponse> employeesDto = new ArrayList<>();
-        employees.forEach(employee -> {
-            employeesDto.add(this.mapToEmployeeDto(employee));
-        });
+        employees.forEach(employee -> employeesDto.add(this.mapToEmployeeDto(employee)));
         return employeesDto;
     }
 
@@ -66,22 +60,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest) {
-        Employee employee = repository.findByIdAndState(employeeRequest.getId(), State.Activate);
+    public EmployeeResponse updateEmployee(Employee employees) {
+        Employee employee = repository.findByIdAndState(employees.getId(), State.Activate);
         if (employee == null){
             throw new NotFoundException("Aucun(e) employé(e) trouvé(e)");
         }
-        employee.setFirstName(employeeRequest.getFirstName());
-        employee.setLastName(employeeRequest.getLastName());
-        employee.setEmail(employeeRequest.getEmail());
-        employee.setPhoneNumber(employeeRequest.getPhoneNumber());
-        employee.setGender(employeeRequest.getGender());
-        employee.setDateOfBirth(employeeRequest.getDateOfBirth());
-        if (employeeRequest.getPassword() != null && !Objects.equals(employeeRequest.getPassword(), "")) {
-            employee.setPassword(employeeRequest.getPassword());
+        employee.setFirstName(employees.getFirstName());
+        employee.setLastName(employees.getLastName());
+        employee.setEmail(employees.getEmail());
+        employee.setPhoneNumber(employees.getPhoneNumber());
+        employee.setDateOfBirth(employees.getDateOfBirth());
+        if (employees.getPassword() != null && !Objects.equals(employees.getPassword(), "")) {
+            employee.setPassword(employees.getPassword());
         }
-        Employee savedEmployee = repository.save(employee);
-        return this.mapToEmployeeDto(savedEmployee);
+        return this.mapToEmployeeDto(employee);
     }
 
     @Override
@@ -98,21 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return this.mapToEmployeeDto(employeeToDelete);
     }
 
-    @Override
-    public Employee loadEmployeeByEmail(String email) {
-        return repository.findByEmail(email);
-    }
 
-    @Override
-    public AuthenticationResponse login(AuthenticationRequest request) {
-        Employee employee = repository.findByEmailAndPassword(request.getEmail(), request.getPassword());
-        if (employee != null){
-            return this.mapToAuthenticationResponse(employee);
-        }
-        else {
-            throw new NotFoundException("Email ou mot de passe incorrect");
-        }
-    }
 
     @Override
     public List<EmployeeResponse> findByState(State state) {
@@ -136,33 +114,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .email(employee.getEmail())
                 .dateOfBirth(employee.getDateOfBirth())
                 .phoneNumber(employee.getPhoneNumber())
-                .gender(employee.getGender())
-                .permissions(employee.getPermissions())
+                .roles(employee.getRoles())
                 .state(employee.getState())
                 .build();
-    }
-
-    public AuthenticationResponse mapToAuthenticationResponse(Employee employee){
-        return AuthenticationResponse.builder()
-                .id(employee.getId())
-                .firstName(employee.getFirstName())
-                .lastName(employee.getLastName())
-                .email(employee.getEmail())
-                .phoneNumber(employee.getPhoneNumber())
-                .gender(employee.getGender())
-                .dateOfBirth(employee.getDateOfBirth())
-                .state(employee.getState())
-                .build();
-    }
-
-    public Employee mapAndSaveEmployee(EmployeeRequest employeeRequest){
-        Employee employee =  new Employee();
-        employee.setFirstName(employeeRequest.getFirstName());
-        employee.setLastName(employeeRequest.getLastName());
-        employee.setPhoneNumber(employeeRequest.getPhoneNumber());
-        employee.setEmail(employeeRequest.getEmail());
-        employee.setDateOfBirth(employeeRequest.getDateOfBirth());
-        employee.setGender(employeeRequest.getGender());
-        return repository.save(employee);
     }
 }

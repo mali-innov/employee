@@ -1,7 +1,7 @@
 package com.maliinnov.employee.dto.employee;
 
 import com.maliinnov.employee.enums.State;
-import com.maliinnov.employee.models.Permissions;
+import com.maliinnov.employee.models.Role;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -20,6 +20,6 @@ public class EmployeeResponse {
     private String phoneNumber;
     private String gender;
     private LocalDate dateOfBirth;
-    private Set<Permissions> permissions;
+    private Set<Role> roles;
     private State state;
 }
