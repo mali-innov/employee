@@ -1,12 +1,14 @@
 package com.maliinnov.employee.services.employee;
 
 import com.maliinnov.employee.dto.employee.EmployeeResponse;
+import com.maliinnov.employee.dto.role.RoleRequest;
 import com.maliinnov.employee.enums.State;
 import com.maliinnov.employee.exception.BadRequestException;
 import com.maliinnov.employee.exception.NotFoundException;
 import com.maliinnov.employee.models.Employee;
 import com.maliinnov.employee.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Objects;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public EmployeeResponse addEmployee(Employee employee) {
@@ -29,6 +32,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee phoneNumber = repository.findByPhoneNumber(employee.getPhoneNumber());
         if (phoneNumber != null){
             throw new BadRequestException(employee.getPhoneNumber()+" existe déjà");
+        }
+        if (employee.getPassword() != null && !Objects.equals(employee.getPassword(), "")) {
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         }
         return this.mapToEmployeeDto(repository.save(employee));
     }
@@ -73,6 +79,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employees.getPassword() != null && !Objects.equals(employees.getPassword(), "")) {
             employee.setPassword(employees.getPassword());
         }
+        return this.mapToEmployeeDto(employee);
+    }
+
+    @Override
+    public EmployeeResponse addRoleToUser(Long userId, RoleRequest request) {
+        Employee employee = repository.findByIdAndState(userId, State.Activate);
+
+        if (employee == null) {
+            throw new NotFoundException("Aucun employée trouvé(e)");
+        }
+        employee.setRoles(request.getRoles());
         return this.mapToEmployeeDto(employee);
     }
 

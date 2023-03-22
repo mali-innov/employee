@@ -1,6 +1,7 @@
 package com.maliinnov.employee.controllers;
 
 import com.maliinnov.employee.dto.employee.EmployeeResponse;
+import com.maliinnov.employee.dto.role.RoleRequest;
 import com.maliinnov.employee.enums.State;
 import com.maliinnov.employee.models.Employee;
 import com.maliinnov.employee.services.employee.EmployeeService;
@@ -50,6 +51,13 @@ public class EmployeeController {
     @PutMapping
     ResponseEntity<EmployeeResponse> update(@RequestBody Employee employee){
         return new ResponseEntity<>(service.updateEmployee(employee), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    @PutMapping("/role/{employeeId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    EmployeeResponse addRoleToUser(@PathVariable Long employeeId, @RequestBody RoleRequest roles) {
+        return service.addRoleToUser(employeeId, roles);
     }
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('EMPLOYEE')")

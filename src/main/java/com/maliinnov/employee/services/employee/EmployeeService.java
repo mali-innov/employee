@@ -1,6 +1,7 @@
 package com.maliinnov.employee.services.employee;
 
 import com.maliinnov.employee.dto.employee.EmployeeResponse;
+import com.maliinnov.employee.dto.role.RoleRequest;
 import com.maliinnov.employee.enums.State;
 import com.maliinnov.employee.models.Employee;
 
@@ -13,6 +14,7 @@ public interface EmployeeService {
     EmployeeResponse findById(Long id);
     EmployeeResponse findByIdAndState(Long id, State state);
     EmployeeResponse updateEmployee(Employee employee);
+    EmployeeResponse addRoleToUser(Long userId, RoleRequest request);
     EmployeeResponse deleteEmployee(Employee employee);
     EmployeeResponse restoreEmployee(Employee employee);
 
