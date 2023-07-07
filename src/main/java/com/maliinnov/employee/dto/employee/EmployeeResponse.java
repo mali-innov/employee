@@ -5,7 +5,7 @@ import com.maliinnov.employee.models.Role;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +20,6 @@ public class EmployeeResponse {
     private String phoneNumber;
     private String gender;
     private LocalDate dateOfBirth;
-    private Set<Role> roles;
+    private List<Role> roles;
     private State state;
 }

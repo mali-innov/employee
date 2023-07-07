@@ -1,6 +1,5 @@
 package com.maliinnov.employee.dto.role;
 
-import com.maliinnov.employee.enums.Roles;
 import lombok.*;
 
 @Builder
@@ -9,5 +8,5 @@ import lombok.*;
 public class RoleResponse {
 
     private Long id;
-    private Roles name;
+    private String name;
 }

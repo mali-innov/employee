@@ -1,6 +1,7 @@
 package com.maliinnov.employee.dto.auth;
 
 import com.maliinnov.employee.enums.State;
+import com.maliinnov.employee.models.Role;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,8 +18,7 @@ public class AuthenticationResponse {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private LocalDate dateOfBirth;
-    private List<String> roles;
+    private List<Role> roles;
     private State state;
     private String accessToken;
 }

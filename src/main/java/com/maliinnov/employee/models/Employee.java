@@ -1,7 +1,7 @@
 package com.maliinnov.employee.models;
 
 import com.maliinnov.employee.enums.State;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -29,6 +29,6 @@ public class Employee {
     private State state = State.Activate;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package com.maliinnov.employee.security.services;
 
+import com.maliinnov.employee.enums.State;
 import com.maliinnov.employee.exception.NotFoundException;
 import com.maliinnov.employee.models.Employee;
 import com.maliinnov.employee.repositories.EmployeeRepository;
@@ -17,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Employee employee = repository.findByEmail(email);
+        Employee employee = repository.findByEmailAndState(email, State.Activate);
         if (employee == null){
             throw new NotFoundException("Email ou mot de passe incorrect");
         }

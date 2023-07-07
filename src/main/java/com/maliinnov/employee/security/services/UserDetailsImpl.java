@@ -8,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +21,11 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     private String phoneNumber;
     private String password;
-    private LocalDate dateOfBirth;
     private State state;
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(Long id, String firstName, String lastName, String email, String phoneNumber,
-                           String password, LocalDate dateOfBirth, State state,
+                           String password, State state,
                            Collection<? extends GrantedAuthority> roles) {
         this.id = id;
         this.firstName = firstName;
@@ -35,34 +33,31 @@ public class UserDetailsImpl implements UserDetails {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
-        this.dateOfBirth = dateOfBirth;
         this.state = state;
         this.authorities = roles;
     }
 
-    public static UserDetailsImpl build(Employee employee){
-        List<GrantedAuthority> roles = employee.getRoles().stream()
-                .map(appRole -> new SimpleGrantedAuthority(appRole.getName().name()))
+    public static UserDetailsImpl build(Employee user){
+        List<GrantedAuthority> roles = user.getRoles().stream()
+                .map(appRole -> new SimpleGrantedAuthority(appRole.getName()))
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(
-                employee.getId(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getEmail(),
-                employee.getPhoneNumber(),
-                employee.getPassword(),
-                employee.getDateOfBirth(),
-                employee.getState(),
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getPassword(),
+                user.getState(),
                 roles
         );
     }
 
     public static UserDetailsImpl build(Long id, String firstName, String lastName, String email,
-                                        String phoneNumber,String password, LocalDate dateOfBirth,
-                                        State state, List<GrantedAuthority> roles) {
-        return new UserDetailsImpl(id, firstName, lastName, email, phoneNumber, password, dateOfBirth,
-                state, roles);
+                                        String phoneNumber, String password, State state,
+                                        Collection<? extends GrantedAuthority> roles) {
+        return new UserDetailsImpl(id, firstName, lastName, email, phoneNumber,  password, state, roles);
     }
 
 

@@ -5,7 +5,7 @@ import com.maliinnov.employee.enums.Roles;
 import com.maliinnov.employee.enums.State;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -19,12 +19,11 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Roles name;
+    private String name;
     @Enumerated(EnumType.STRING)
     private State state = State.Activate;
 
-    public Role(Roles name) {
+    public Role(String name) {
         this.name = name;
     }
 }
